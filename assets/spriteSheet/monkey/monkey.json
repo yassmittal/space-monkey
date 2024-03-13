@@ -1,0 +1,44 @@
+{"frames": [
+
+{
+	"filename": "spacemonkey_dead01.png",
+	"frame": {"x":0,"y":0,"w":118,"h":158},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":118,"h":158},
+	"sourceSize": {"w":118,"h":158}
+},
+{
+	"filename": "spacemonkey_dead02.png",
+	"frame": {"x":0,"y":158,"w":118,"h":158},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":118,"h":158},
+	"sourceSize": {"w":118,"h":158}
+},
+{
+	"filename": "spacemonkey_fly01.png",
+	"frame": {"x":0,"y":316,"w":118,"h":158},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":118,"h":158},
+	"sourceSize": {"w":118,"h":158}
+},
+{
+	"filename": "spacemonkey_fly02.png",
+	"frame": {"x":0,"y":474,"w":118,"h":158},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":118,"h":158},
+	"sourceSize": {"w":118,"h":158}
+}],
+"meta": {
+	"app": "https://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "monkey.png",
+	"format": "RGBA8888",
+	"size": {"w":118,"h":632},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:3e3ef05b6cc4da1914187cf95d64dcc3:43f06728f602778531c81594e5950f3c:f22ec43fa8bb0df0abc56a901a4cbbb5$"
+}
+}
