@@ -2,8 +2,13 @@ class Game extends Phaser.Scene {
   constructor() {
     super('game')
   }
-
   preload() {
+
+    this.asteroids = ["asteroid1", "asteroid2", "asteroid3"];
+
+    this.asteroids.forEach(asteroid => {
+      this.load.image(`${asteroid}`, `./assets/tackels/${asteroid}.png`)
+    })
 
     this.load.image('background', "./assets/background/bg_single_1536x3840.png");
     this.load.image('anamoly', "./assets/objects/spaceObjects/space_object_anomaly.png")
@@ -17,6 +22,12 @@ class Game extends Phaser.Scene {
     this.load.image('powerUpBlue', "./assets/tackels/powerup_blue.png")
     this.load.image('powerUpRed', "./assets/tackels/powerup_red.png")
 
+    this.load.image('alienSideGreen', "./assets/objects/enemies/alien_side_green.png")
+    this.load.image('alignTop1', "./assets/objects/enemies/alien_top_01.png")
+    this.load.image('alignTop2', "./assets/objects/enemies/alien_top_02.png")
+
+    this.load.image('spaceFlier', "/assets/objects/spaceFlier/spaceflier_01_a.png")
+
     this.load.audio('bgMusic', './assets/sounds/backgroundMusic.mp3');
     this.load.audio('achievement', './assets/sounds/achievement.wav');
     this.load.audio('powerUp', "./assets/sounds/powerUp.mp3")
@@ -28,7 +39,9 @@ class Game extends Phaser.Scene {
 
     const bgMusic = this.sound.add('bgMusic');
     const achievementSound = this.sound.add('achievement');
-    const powerUpSound = this.sound.add('powerUp')
+    const powerUpSound = this.sound.add('powerUp');
+
+
 
 
 
@@ -40,8 +53,15 @@ class Game extends Phaser.Scene {
 
     this.bg = this.add.tileSprite(0, 0, width * 5 / 2, height * 5 / 2, 'background').setOrigin(0, 0).setScale(0.4);
 
+
     // this.banana = this.physics.add.sprite(Phaser.Math.Between(30, width), -50, 'banana')
     //   .setScale(0.6)
+
+
+    let spaceFlier = this.add.sprite(Phaser.Math.Between(0, width), Phaser.Math.Between(50, height), 'spaceFlier').setScale(0.4);
+
+    spaceFlier.rotation = Phaser.Math.DegToRad(90);
+
 
     this.showcaseObjects = [
       this.add.sprite(Phaser.Math.Between(0, width), Phaser.Math.Between(50, height), 'anamoly').setScale(0.4),
@@ -54,6 +74,25 @@ class Game extends Phaser.Scene {
 
     this.powerUpBlue = this.physics.add.sprite(width / 2, 0, 'powerUpBlue')
       .setScale(0.7);
+
+    this.asteroidsSprites = []
+
+    this.asteroids.forEach((asteroid) => {
+      this.asteroidsSprites.push(
+        this.physics.add.sprite(Phaser.Math.Between(0, width), Phaser.Math.Between(50, height), `${asteroid}`).setScale(0.7)
+      )
+    })
+
+
+
+    this.asteroidsSprites.forEach(asteroidsSprite => {
+      console.log(asteroidsSprite)
+      // this.physics.add.collider(this.monkey, asteroidsSprite, () => {
+      //   console.log('game over')
+      // })
+
+    })
+
     // this.banana.setRandomPosition(0, 0, width, 0);
 
 
@@ -115,6 +154,8 @@ class Game extends Phaser.Scene {
 
     })
 
+
+
     this.cursors = this.input.keyboard.createCursorKeys();
   }
   update() {
@@ -156,6 +197,11 @@ class Game extends Phaser.Scene {
     else {
       this.monkey.setVelocityX(0);
     }
+
+    this.asteroidsSprites.forEach(asteroidsSprite => {
+      asteroidsSprite.y += 2;
+    })
+
 
   }
 
