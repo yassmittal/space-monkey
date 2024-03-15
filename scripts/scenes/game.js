@@ -1,7 +1,10 @@
+let rotationValue = 0;
 class Game extends Phaser.Scene {
+
   constructor() {
     super('game')
   }
+
   preload() {
 
     this.asteroids = ["asteroid1", "asteroid2", "asteroid3"];
@@ -31,15 +34,22 @@ class Game extends Phaser.Scene {
     this.load.audio('bgMusic', './assets/sounds/backgroundMusic.mp3');
     this.load.audio('achievement', './assets/sounds/achievement.wav');
     this.load.audio('powerUp', "./assets/sounds/powerUp.mp3")
+    this.load.audio('explosion', "./assets/sounds/explosion.mp3")
+    this.load.audio('gameOver', "./assets/sounds/gameOver.mp3")
 
 
   }
   create() {
+
+    let monkeyDeadOne = false;
     const { width, height } = this.scale;
 
     const bgMusic = this.sound.add('bgMusic');
     const achievementSound = this.sound.add('achievement');
     const powerUpSound = this.sound.add('powerUp');
+    const explosionSound = this.sound.add('explosion')
+    const gameOverSound = this.sound.add('gameOver')
+
 
 
 
@@ -75,26 +85,57 @@ class Game extends Phaser.Scene {
     this.powerUpBlue = this.physics.add.sprite(width / 2, 0, 'powerUpBlue')
       .setScale(0.7);
 
-    this.asteroidsSprites = []
+    this.asteroidsSprites = this.physics.add.group();
 
-    this.asteroids.forEach((asteroid) => {
-      this.asteroidsSprites.push(
-        this.physics.add.sprite(Phaser.Math.Between(0, width), Phaser.Math.Between(50, height), `${asteroid}`).setScale(0.7)
-      )
-    })
+    // this.asteroids.forEach(asteroid => {
+    //   this.asteroidsSprites.create(Phaser.Math.Between(0, width), 0, `${asteroid}`)
+    // })
 
 
 
-    this.asteroidsSprites.forEach(asteroidsSprite => {
-      console.log(asteroidsSprite)
-      // this.physics.add.collider(this.monkey, asteroidsSprite, () => {
-      //   console.log('game over')
-      // })
+    // let currentAsteroid = 0;
 
-    })
 
-    // this.banana.setRandomPosition(0, 0, width, 0);
+    // var timer = this.time.addEvent({
+    //   delay: 4000,                // ms
+    //   callback: () => {
+    //     for (let i = 0; i < this.asteroids.length; i++) {
+    //       this.asteroidsSprites.create(Phaser.Math.Between(0, width), 0, `${this.asteroids[i]}`)
+    //       ++currentAsteroid;
+    //     }
 
+    //   },
+    //   //args: [],
+    //   callbackScope: this,
+    //   repeat: -1
+    // });
+
+
+    let currentAsteroid = 0;
+
+    // rotate.spinObject(this.asteroidsSprites)
+
+    // this.tweens.add({
+    //   targets: this.asteroidsSprites, //your image that must spin
+    //   rotation: rad, //rotation value must be radian
+    //   duration: 1000 //duration is in milliseconds
+    // });
+
+
+    var timer = this.time.addEvent({
+      delay: 8000,                // ms
+      callback: () => {
+        this.asteroidsSprites.create(Phaser.Math.Between(0, width), -200, `${this.asteroids[currentAsteroid]}`)
+
+        if (currentAsteroid >= this.asteroids.length - 1) {
+          currentAsteroid = 0;
+        }
+        ++currentAsteroid;
+
+      },
+      callbackScope: this,
+      repeat: -1
+    });
 
     this.monkey = this.physics.add.sprite(width / 2, height - 60, 'monkey')
       .setScale(0.6)
@@ -112,7 +153,44 @@ class Game extends Phaser.Scene {
       repeat: -1,
     });
 
+    this.anims.create({
+      key: 'dead1',
+      frames: [{ key: "monkey", frame: "spacemonkey_dead01.png" }],
+      repeat: -1
+    })
+
+    this.anims.create({
+      key: 'dead2',
+      frames: [{ key: "monkey", frame: "spacemonkey_dead02.png" }],
+      repeat: -1
+    })
+
+
     this.monkey.anims.play('fly', true)
+
+    this.physics.add.collider(this.monkey, this.asteroidsSprites, (child, otherObject) => {
+      console.log(child);
+
+      otherObject.disableBody(true, true)
+
+      if (monkeyDeadOne) {
+        this.monkey.anims.play('dead2', true)
+        console.log('dead 2 run')
+        monkeyDeadOne = false;
+        bgMusic.pause()
+        gameOverSound.play()
+
+        return;
+      } else {
+        this.monkey.anims.play('dead1', true)
+        monkeyDeadOne = true;
+        console.log('dead 1 run')
+        explosionSound.play()
+      }
+
+    })
+
+
 
     this.physics.add.collider(this.monkey, this.banana, () => {
       this.banana.disableBody(true, true)
@@ -198,9 +276,19 @@ class Game extends Phaser.Scene {
       this.monkey.setVelocityX(0);
     }
 
-    this.asteroidsSprites.forEach(asteroidsSprite => {
-      asteroidsSprite.y += 2;
-    })
+    // this.asteroidsSprites.forEach(asteroidsSprite => {
+    this.asteroidsSprites.y += 2;
+    // })
+    rotationValue = rotationValue + 0.04;;
+
+
+    this.asteroidsSprites.children.iterate(function (child) {
+
+      //  Give each star a slightly different bounce
+      child.setVelocityY(60)
+
+      child.setRotation(rotationValue)
+    });
 
 
   }
