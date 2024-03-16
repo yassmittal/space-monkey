@@ -2,7 +2,9 @@ let rotationValue = 0;
 class Game extends Phaser.Scene {
 
   constructor() {
-    super('game')
+    super({
+      key: "Game"
+    })
   }
 
   preload() {
@@ -29,7 +31,9 @@ class Game extends Phaser.Scene {
     this.load.image('alignTop1', "./assets/objects/enemies/alien_top_01.png")
     this.load.image('alignTop2', "./assets/objects/enemies/alien_top_02.png")
 
-    this.load.image('spaceFlier', "/assets/objects/spaceFlier/spaceflier_01_a.png")
+    this.load.image('spaceFlier', "./assets/objects/spaceFlier/spaceflier_01_a.png")
+
+    // this.load.image('buttonImg', "./assets/buttons/buttonImg.png")
 
     this.load.audio('bgMusic', './assets/sounds/backgroundMusic.mp3');
     this.load.audio('achievement', './assets/sounds/achievement.wav');
@@ -87,40 +91,7 @@ class Game extends Phaser.Scene {
 
     this.asteroidsSprites = this.physics.add.group();
 
-    // this.asteroids.forEach(asteroid => {
-    //   this.asteroidsSprites.create(Phaser.Math.Between(0, width), 0, `${asteroid}`)
-    // })
-
-
-
-    // let currentAsteroid = 0;
-
-
-    // var timer = this.time.addEvent({
-    //   delay: 4000,                // ms
-    //   callback: () => {
-    //     for (let i = 0; i < this.asteroids.length; i++) {
-    //       this.asteroidsSprites.create(Phaser.Math.Between(0, width), 0, `${this.asteroids[i]}`)
-    //       ++currentAsteroid;
-    //     }
-
-    //   },
-    //   //args: [],
-    //   callbackScope: this,
-    //   repeat: -1
-    // });
-
-
     let currentAsteroid = 0;
-
-    // rotate.spinObject(this.asteroidsSprites)
-
-    // this.tweens.add({
-    //   targets: this.asteroidsSprites, //your image that must spin
-    //   rotation: rad, //rotation value must be radian
-    //   duration: 1000 //duration is in milliseconds
-    // });
-
 
     var timer = this.time.addEvent({
       delay: 8000,                // ms
@@ -166,19 +137,19 @@ class Game extends Phaser.Scene {
     })
 
 
+
     this.monkey.anims.play('fly', true)
 
     this.physics.add.collider(this.monkey, this.asteroidsSprites, (child, otherObject) => {
       console.log(child);
-
       otherObject.disableBody(true, true)
 
       if (monkeyDeadOne) {
         this.monkey.anims.play('dead2', true)
         console.log('dead 2 run')
         monkeyDeadOne = false;
-        bgMusic.pause()
-        gameOverSound.play()
+        explosionSound.play()
+        gameOver(this, bgMusic, gameOverSound)
 
         return;
       } else {
@@ -196,6 +167,7 @@ class Game extends Phaser.Scene {
       this.banana.disableBody(true, true)
       this.score += 10;
       console.log(this.score)
+
       achievementSound.play()
     }, null, this)
 
@@ -231,6 +203,11 @@ class Game extends Phaser.Scene {
 
 
     })
+
+
+
+
+
 
 
 
@@ -276,11 +253,8 @@ class Game extends Phaser.Scene {
       this.monkey.setVelocityX(0);
     }
 
-    // this.asteroidsSprites.forEach(asteroidsSprite => {
     this.asteroidsSprites.y += 2;
-    // })
     rotationValue = rotationValue + 0.04;;
-
 
     this.asteroidsSprites.children.iterate(function (child) {
 
@@ -293,6 +267,58 @@ class Game extends Phaser.Scene {
 
   }
 
+
 }
+function gamedOver(scene, bgMusic, gameOverSound, Game) {
+  bgMusic.pause()
+  gameOverSound.play()
+  // const button = scene.add.image(300, 300, 'buttonImg').setScale(0.2);
+  button.setInteractive({ useHandCursor: true });
+  button.inputEnabled = true;
+
+  button.on('pointerdown', () => {
+    // Do something when the button is clicked.
+    restartGame(scene)
+    console.log('button clicked')
+  });
+
+  const restartText = scene.add.text(button.x, button.y, 'Restart').setOrigin(0.5, 0.5);
+
+  scene.scene.pause(Game);
+
+}
+
+function gameOver(scene, bgMusic, gameOverSound, Game) {
+  bgMusic.pause();
+  gameOverSound.play();
+
+  // Create the button
+  // const button = scene.add.image(300, 300, 'buttonImg').setScale(0.2);
+  // button.setInteractive({ useHandCursor: true });
+
+  // button.on('pointerdown', () => {
+  //   // Do something when the button is clicked.
+  //   restartGame(scene);
+  //   console.log('Button clicked');
+  // });
+
+  // const restartText = scene.add.text(button.x, button.y, 'Restart').setOrigin(0.5, 0.5);
+
+  // Enable input events even when the scene is paused
+  // scene.input.enabled = true;
+
+  // Pause the scene after creating the button
+  scene.scene.pause();
+  scene.scene.launch('ButtonScene');
+  scene.input.enabled = true;
+}
+
+
+
+
+function restartGame(scene) {
+  scene.scene.resume();
+}
+
 
 export default Game;

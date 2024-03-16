@@ -1,6 +1,5 @@
-console.log(Phaser)
-
 import Game from "./scenes/game.js";
+import ButtonScene from "./scenes/button.js"
 const config = {
   width: 600,
   height: 600,
@@ -8,7 +7,7 @@ const config = {
   physics: {
     default: 'arcade',
     arcade: {
-      debug: true
+      debug: false
     }
   },
 
