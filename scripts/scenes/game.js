@@ -1,3 +1,5 @@
+import ButtonScene from "./button.js";
+
 let rotationValue = 0;
 class Game extends Phaser.Scene {
 
@@ -86,6 +88,14 @@ class Game extends Phaser.Scene {
     this.banana = this.physics.add.sprite(width / 2, -50, 'banana')
       .setScale(0.6);
 
+    this.physics.add.sprite(30, 20, 'banana')
+      .setScale(0.6);
+
+    let scoreText = this.add.text(60, 5, `:${this.score}`, {
+      fontSize: '32px',
+      fontWeight: "700",
+    })
+
     this.powerUpBlue = this.physics.add.sprite(width / 2, 0, 'powerUpBlue')
       .setScale(0.7);
 
@@ -161,13 +171,11 @@ class Game extends Phaser.Scene {
 
     })
 
-
-
     this.physics.add.collider(this.monkey, this.banana, () => {
       this.banana.disableBody(true, true)
-      this.score += 10;
+      this.score += 1;
       console.log(this.score)
-
+      gameOver(this, bgMusic, gameOverSound)
       achievementSound.play()
     }, null, this)
 
@@ -175,7 +183,7 @@ class Game extends Phaser.Scene {
       this.powerUpBlue.disableBody(true, true);
       powerUpSound.play()
       // this.monkey.setScale(0.8);
-      var tween1 = this.tweens.add({
+      this.tweens.add({
         targets: this.monkey,
         scaleX: 1,
         scaleY: 1,
@@ -203,14 +211,6 @@ class Game extends Phaser.Scene {
 
 
     })
-
-
-
-
-
-
-
-
     this.cursors = this.input.keyboard.createCursorKeys();
   }
   update() {
@@ -291,26 +291,11 @@ function gamedOver(scene, bgMusic, gameOverSound, Game) {
 function gameOver(scene, bgMusic, gameOverSound, Game) {
   bgMusic.pause();
   gameOverSound.play();
-
-  // Create the button
-  // const button = scene.add.image(300, 300, 'buttonImg').setScale(0.2);
-  // button.setInteractive({ useHandCursor: true });
-
-  // button.on('pointerdown', () => {
-  //   // Do something when the button is clicked.
-  //   restartGame(scene);
-  //   console.log('Button clicked');
-  // });
-
-  // const restartText = scene.add.text(button.x, button.y, 'Restart').setOrigin(0.5, 0.5);
-
-  // Enable input events even when the scene is paused
-  // scene.input.enabled = true;
-
-  // Pause the scene after creating the button
   scene.scene.pause();
-  scene.scene.launch('ButtonScene');
-  scene.input.enabled = true;
+  scene.anims.remove('fly');
+  scene.anims.remove('dead1');
+  scene.anims.remove('dead2');
+  scene.scene.launch("ButtonScene");
 }
 
 

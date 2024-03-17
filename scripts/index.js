@@ -11,7 +11,7 @@ const config = {
     }
   },
 
-  scene: [Game]
+  scene: [Game, ButtonScene]
 };
 
 new Phaser.Game(config);
