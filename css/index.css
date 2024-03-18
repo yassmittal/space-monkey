@@ -6,3 +6,53 @@ body {
   align-items: start;
   justify-content: center;
 }
+
+
+.toprightfixedBtn {
+  position: fixed;
+  top: 0;
+  right: 0;
+  margin: 1rem;
+}
+
+.toprightfixedBtn>img {
+  max-width: 50px;
+}
+
+.toolTipWrap:hover .toolTipContent {
+  opacity: 1;
+  transform: translate(0px, -50%);
+  pointer-events: all;
+}
+
+.toolTipWrap>.toolTipContent {
+  position: absolute;
+  top: 50%;
+  right: 100%;
+  color: black;
+  font-size: 0.75rem;
+  opacity: 0;
+  transform: translate(-20px, -50%);
+  min-width: 90px;
+  background-color: white;
+  border-radius: 8px;
+  padding: 4px 8px;
+  transition: transform 200ms ease, opacity 200ms ease;
+  margin-right: 14px;
+  pointer-events: none;
+}
+
+.toolTipWrap>.toolTipContent::after {
+  content: '';
+  position: absolute;
+  left: calc(100% - 1px);
+  /*Here I decreased the 1px because i don't want to leave any type of separation between the tooltip content and triangle  */
+  top: 50%;
+  transform: translateY(-50%);
+  width: 0;
+  height: 0;
+  border-left: 10px solid white;
+  border-right: 10px solid transparent;
+  border-bottom: 10px solid transparent;
+  border-top: 10px solid transparent;
+}
