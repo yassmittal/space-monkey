@@ -70,9 +70,9 @@ class Game extends Phaser.Scene {
     //   .setScale(0.6)
 
 
-    let spaceFlier = this.add.sprite(Phaser.Math.Between(0, width), Phaser.Math.Between(50, height), 'spaceFlier').setScale(0.4);
+    // let spaceFlier = this.add.sprite(Phaser.Math.Between(0, width), Phaser.Math.Between(50, height), 'spaceFlier').setScale(0.4);
 
-    spaceFlier.rotation = Phaser.Math.DegToRad(90);
+    // spaceFlier.rotation = Phaser.Math.DegToRad(90);
 
 
     this.showcaseObjects = [
