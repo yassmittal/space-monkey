@@ -1,4 +1,4 @@
-import ButtonScene from "./button.js";
+import YouWonScene from "./youWonScene.js";
 
 let rotationValue = 0;
 class Game extends Phaser.Scene {
@@ -35,13 +35,13 @@ class Game extends Phaser.Scene {
 
     this.load.image('spaceFlier', "./assets/objects/spaceFlier/spaceflier_01_a.png")
 
-    // this.load.image('buttonImg', "./assets/buttons/buttonImg.png")
 
     this.load.audio('bgMusic', './assets/sounds/backgroundMusic.mp3');
     this.load.audio('achievement', './assets/sounds/achievement.wav');
     this.load.audio('powerUp', "./assets/sounds/powerUp.mp3")
     this.load.audio('explosion', "./assets/sounds/explosion.mp3")
     this.load.audio('gameOver', "./assets/sounds/gameOver.mp3")
+    this.load.audio('levelComplete', "./assets/sounds/levelComplete.mp3")
 
 
   }
@@ -55,11 +55,7 @@ class Game extends Phaser.Scene {
     const powerUpSound = this.sound.add('powerUp');
     const explosionSound = this.sound.add('explosion')
     const gameOverSound = this.sound.add('gameOver')
-
-
-
-
-
+    const levelCompleteSound = this.sound.add('levelComplete')
 
 
 
@@ -91,7 +87,7 @@ class Game extends Phaser.Scene {
     this.physics.add.sprite(30, 20, 'banana')
       .setScale(0.6);
 
-    let scoreText = this.add.text(60, 5, `:${this.score}`, {
+    let scoreText = this.add.text(50, 5, `:${this.score}`, {
       fontSize: '32px',
       fontWeight: "700",
     })
@@ -151,21 +147,17 @@ class Game extends Phaser.Scene {
     this.monkey.anims.play('fly', true)
 
     this.physics.add.collider(this.monkey, this.asteroidsSprites, (child, otherObject) => {
-      console.log(child);
       otherObject.disableBody(true, true)
 
       if (monkeyDeadOne) {
         this.monkey.anims.play('dead2', true)
-        console.log('dead 2 run')
         monkeyDeadOne = false;
         explosionSound.play()
         gameOver(this, bgMusic, gameOverSound)
-
         return;
       } else {
         this.monkey.anims.play('dead1', true)
         monkeyDeadOne = true;
-        console.log('dead 1 run')
         explosionSound.play()
       }
 
@@ -174,9 +166,12 @@ class Game extends Phaser.Scene {
     this.physics.add.collider(this.monkey, this.banana, () => {
       this.banana.disableBody(true, true)
       this.score += 1;
-      console.log(this.score)
-      gameOver(this, bgMusic, gameOverSound)
       achievementSound.play()
+      scoreText.setText(`:${this.score}`)
+
+      if (this.score >= 10) {
+        gameWon(this, bgMusic, levelCompleteSound)
+      }
     }, null, this)
 
     this.physics.add.collider(this.monkey, this.powerUpBlue, () => {
@@ -193,7 +188,6 @@ class Game extends Phaser.Scene {
         repeat: 0, // Number of times to repeat (-1 for infinity)
         onComplete: () => {
           //   // Action to perform once the tween is completed
-          console.log("Tween completed!");
           var tween2 = this.tweens.add({
             targets: this.monkey,
             scaleX: 0.6,
@@ -228,8 +222,6 @@ class Game extends Phaser.Scene {
       if (object.y > 800) {
         object.x = Phaser.Math.Between(0, 600);
         object.y = -120;
-        // object.body.enable = true;
-        // object.enableBody(true, Phaser.Math.Between(50, 600), -50, true, true);
       }
     });
 
@@ -279,7 +271,6 @@ function gamedOver(scene, bgMusic, gameOverSound, Game) {
   button.on('pointerdown', () => {
     // Do something when the button is clicked.
     restartGame(scene)
-    console.log('button clicked')
   });
 
   const restartText = scene.add.text(button.x, button.y, 'Restart').setOrigin(0.5, 0.5);
@@ -295,11 +286,18 @@ function gameOver(scene, bgMusic, gameOverSound, Game) {
   scene.anims.remove('fly');
   scene.anims.remove('dead1');
   scene.anims.remove('dead2');
-  scene.scene.launch("ButtonScene");
+  scene.scene.launch("YouLooseScene");
 }
 
-
-
+function gameWon(scene, bgMusic, levelCompleteSound) {
+  scene.scene.pause();
+  scene.anims.remove('fly');
+  scene.anims.remove('dead1');
+  scene.anims.remove('dead2');
+  scene.scene.launch("YouWonScene");
+  bgMusic.pause();
+  levelCompleteSound.play();
+}
 
 function restartGame(scene) {
   scene.scene.resume();

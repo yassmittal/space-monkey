@@ -1,5 +1,6 @@
 import Game from "./scenes/game.js";
-import ButtonScene from "./scenes/button.js"
+import YouLooseScene from "./scenes/youLooseScene.js";
+import YouWonScene from "./scenes/youWonScene.js"
 const config = {
   width: 600,
   height: 600,
@@ -11,7 +12,7 @@ const config = {
     }
   },
 
-  scene: [Game, ButtonScene]
+  scene: [Game, YouWonScene, YouLooseScene]
 };
 
 new Phaser.Game(config);
