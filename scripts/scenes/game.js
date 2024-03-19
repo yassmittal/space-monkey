@@ -29,9 +29,13 @@ class Game extends Phaser.Scene {
     this.load.image('powerUpBlue', "./assets/tackels/powerup_blue.png")
     this.load.image('powerUpRed', "./assets/tackels/powerup_red.png")
 
+
+
     this.load.image('alienSideGreen', "./assets/objects/enemies/alien_side_green.png")
     this.load.image('alignTop1', "./assets/objects/enemies/alien_top_01.png")
     this.load.image('alignTop2', "./assets/objects/enemies/alien_top_02.png")
+
+    this.load.image('grenadeBlue', "./assets/tackels/object_grenade_blue.png")
 
     this.load.image('spaceFlier', "./assets/objects/spaceFlier/spaceflier_01_a.png")
 
@@ -62,17 +66,20 @@ class Game extends Phaser.Scene {
 
     bgMusic.play()
     this.score = 0;
+    this.bombAlreadyMade = false;
+    this.waitedForBomb = false;
+
+    this.waitTimer = this.time.delayedCall(5000, () => {
+      this.waitedForBomb = true;
+      console.log("Task executed after waiting for 5 seconds.");
+    }, [], this);
+
 
     this.bg = this.add.tileSprite(0, 0, width * 5 / 2, height * 5 / 2, 'background').setOrigin(0, 0).setScale(0.4);
 
-
-    // this.banana = this.physics.add.sprite(Phaser.Math.Between(30, width), -50, 'banana')
-    //   .setScale(0.6)
-
-
     // let spaceFlier = this.add.sprite(Phaser.Math.Between(0, width), Phaser.Math.Between(50, height), 'spaceFlier').setScale(0.4);
-
     // spaceFlier.rotation = Phaser.Math.DegToRad(90);
+    this.alignTop2 = this.physics.add.sprite(100, -70, 'alignTop2');
 
 
     this.showcaseObjects = [
@@ -147,7 +154,6 @@ class Game extends Phaser.Scene {
     this.monkey.anims.play('fly', true)
 
     this.physics.add.collider(this.monkey, this.asteroidsSprites, (child, otherObject) => {
-      otherObject.disableBody(true, true)
 
       if (monkeyDeadOne) {
         this.monkey.anims.play('dead2', true)
@@ -156,6 +162,7 @@ class Game extends Phaser.Scene {
         gameOver(this, bgMusic, gameOverSound)
         return;
       } else {
+        otherObject.disableBody(true, true)
         this.monkey.anims.play('dead1', true)
         monkeyDeadOne = true;
         explosionSound.play()
@@ -169,10 +176,23 @@ class Game extends Phaser.Scene {
       achievementSound.play()
       scoreText.setText(`:${this.score}`)
 
+      if (this.score >= 6) {
+        callAlienShips(this)
+      }
+
       if (this.score >= 10) {
         gameWon(this, bgMusic, levelCompleteSound)
       }
     }, null, this)
+
+    this.physics.add.collider(this.monkey, this.alignTop2, () => {
+      this.alignTop2.disableBody(true, true);
+    }, null, this)
+
+
+    function callAlienShips(scene) {
+
+    }
 
     this.physics.add.collider(this.monkey, this.powerUpBlue, () => {
       this.powerUpBlue.disableBody(true, true);
@@ -206,6 +226,8 @@ class Game extends Phaser.Scene {
 
     })
     this.cursors = this.input.keyboard.createCursorKeys();
+
+
   }
   update() {
     this.bg.tilePositionY -= 6;
@@ -257,6 +279,37 @@ class Game extends Phaser.Scene {
     });
 
 
+    if (this.score >= 1) {
+
+      this.alignTop2.setVelocityY(40)
+
+      if (this.alignTop2.body.position.y >= 40) {
+        this.alignTop2.setVelocityY(0)
+
+        if (this.alignTop2.body.position.x <= 70) {
+          this.alignTop2.setVelocityX(40)
+        } else if (this.alignTop2.body.position.x >= 500) {
+          this.alignTop2.setVelocityX(-40)
+        }
+
+        if (this.alignTop2.body.position.x >= 300) {
+
+          if (!this.bombAlreadyMade) {
+            this.grenadeBlue = this.physics.add.sprite(this.alignTop2.body.x + this.alignTop2.width / 2, this.alignTop2.body.y + this.alignTop2.height + 20, 'grenadeBlue').setScale(0.7).setOrigin(0.5, 0.5);
+            this.bombAlreadyMade = true;
+            this.alignTop2.setVelocityX(0);
+          }
+        }
+
+      }
+      // if (this.alignTop2.y >= 60) {
+      // this.alignTop2.setVelocityY(0)
+      // }
+      console.log(this.alignTop2.body.position.y)
+      this.alignTop2.setRotation(rotationValue)
+    }
+
+
   }
 
 
@@ -302,6 +355,8 @@ function gameWon(scene, bgMusic, levelCompleteSound) {
 function restartGame(scene) {
   scene.scene.resume();
 }
+
+
 
 
 export default Game;
