@@ -1,6 +1,7 @@
 import YouWonScene from "./youWonScene.js";
 
 let rotationValue = 0;
+let rotationValueForGranide = 0;
 class Game extends Phaser.Scene {
 
   constructor() {
@@ -24,6 +25,8 @@ class Game extends Phaser.Scene {
 
     this.load.atlas('monkey',
       './assets/spriteSheet/monkey/monkey.png', './assets/spriteSheet/monkey/monkey.json');
+
+    this.load.spritesheet('boom', 'assets/spriteSheet/explosion.png', { frameWidth: 64, frameHeight: 64, endFrame: 23 });
 
     this.load.image('banana', "./assets/tackels/powerup_banana.png")
     this.load.image('powerUpBlue', "./assets/tackels/powerup_blue.png")
@@ -51,13 +54,13 @@ class Game extends Phaser.Scene {
   }
   create() {
 
-    let monkeyDeadOne = false;
+    this.monkeyDeadOne = false;
     const { width, height } = this.scale;
 
     const bgMusic = this.sound.add('bgMusic');
     const achievementSound = this.sound.add('achievement');
     const powerUpSound = this.sound.add('powerUp');
-    const explosionSound = this.sound.add('explosion')
+    this.explosionSound = this.sound.add('explosion')
     const gameOverSound = this.sound.add('gameOver')
     const levelCompleteSound = this.sound.add('levelComplete')
 
@@ -67,18 +70,12 @@ class Game extends Phaser.Scene {
     bgMusic.play()
     this.score = 0;
     this.bombAlreadyMade = false;
-    this.waitedForBomb = false;
-
-    this.waitTimer = this.time.delayedCall(5000, () => {
-      this.waitedForBomb = true;
-      console.log("Task executed after waiting for 5 seconds.");
-    }, [], this);
+    this.bombBodyEnabled = false;
+    this.doneWaitingForBombRotation = false;
 
 
     this.bg = this.add.tileSprite(0, 0, width * 5 / 2, height * 5 / 2, 'background').setOrigin(0, 0).setScale(0.4);
 
-    // let spaceFlier = this.add.sprite(Phaser.Math.Between(0, width), Phaser.Math.Between(50, height), 'spaceFlier').setScale(0.4);
-    // spaceFlier.rotation = Phaser.Math.DegToRad(90);
     this.alignTop2 = this.physics.add.sprite(100, -70, 'alignTop2');
 
 
@@ -103,11 +100,13 @@ class Game extends Phaser.Scene {
       .setScale(0.7);
 
     this.asteroidsSprites = this.physics.add.group();
+    // this.boom = this.add.sprite(300, 300, 'boom');
+
 
     let currentAsteroid = 0;
 
     var timer = this.time.addEvent({
-      delay: 8000,                // ms
+      delay: 8000,
       callback: () => {
         this.asteroidsSprites.create(Phaser.Math.Between(0, width), -200, `${this.asteroids[currentAsteroid]}`)
 
@@ -124,6 +123,8 @@ class Game extends Phaser.Scene {
     this.monkey = this.physics.add.sprite(width / 2, height - 60, 'monkey')
       .setScale(0.6)
       .setCollideWorldBounds(true);
+
+
 
     this.anims.create({
       key: 'fly',
@@ -149,23 +150,30 @@ class Game extends Phaser.Scene {
       repeat: -1
     })
 
+    this.anims.create({
+      key: 'explode1',
+      frames: this.anims.generateFrameNumbers('boom', { start: 0, end: 23 }),
+      frameRate: 20,
+      // repeat: -1
+    })
+
 
 
     this.monkey.anims.play('fly', true)
 
     this.physics.add.collider(this.monkey, this.asteroidsSprites, (child, otherObject) => {
 
-      if (monkeyDeadOne) {
+      if (this.monkeyDeadOne) {
         this.monkey.anims.play('dead2', true)
-        monkeyDeadOne = false;
-        explosionSound.play()
+        this.monkeyDeadOne = false;
+        this.explosionSound.play()
         gameOver(this, bgMusic, gameOverSound)
         return;
       } else {
         otherObject.disableBody(true, true)
         this.monkey.anims.play('dead1', true)
-        monkeyDeadOne = true;
-        explosionSound.play()
+        this.monkeyDeadOne = true;
+        this.explosionSound.play()
       }
 
     })
@@ -185,7 +193,7 @@ class Game extends Phaser.Scene {
       }
     }, null, this)
 
-    this.physics.add.collider(this.monkey, this.alignTop2, () => {
+    this.physics.add.overlap(this.monkey, this.alignTop2, () => {
       this.alignTop2.disableBody(true, true);
     }, null, this)
 
@@ -197,27 +205,24 @@ class Game extends Phaser.Scene {
     this.physics.add.collider(this.monkey, this.powerUpBlue, () => {
       this.powerUpBlue.disableBody(true, true);
       powerUpSound.play()
-      // this.monkey.setScale(0.8);
       this.tweens.add({
         targets: this.monkey,
         scaleX: 1,
         scaleY: 1,
-        duration: 2100, // Duration of the tween in milliseconds
-        ease: 'easeInOut', // Easing function
-        yoyo: false, // Whether to "yoyo" back to the original scale
-        repeat: 0, // Number of times to repeat (-1 for infinity)
+        duration: 2100,
+        ease: 'easeInOut',
+        yoyo: false,
+        repeat: 0,
         onComplete: () => {
-          //   // Action to perform once the tween is completed
           var tween2 = this.tweens.add({
             targets: this.monkey,
             scaleX: 0.6,
             scaleY: 0.6,
-            duration: 35000, // Duration of the tween in milliseconds
-            ease: 'Linear', // Easing function
-            yoyo: false, // Whether to "yoyo" back to the original scale
-            repeat: 0 // Number of times to repeat (-1 for infinity)
+            duration: 35000,
+            ease: 'Linear',
+            yoyo: false,
+            repeat: 0
           });
-          //   // Add your custom action here
         },
         onCompleteScope: this,
 
@@ -225,9 +230,12 @@ class Game extends Phaser.Scene {
 
 
     })
+
+
     this.cursors = this.input.keyboard.createCursorKeys();
 
 
+    this.grenadeBlue = this.physics.add.sprite(this.alignTop2.body.x + this.alignTop2.width / 2, this.alignTop2.body.y + this.alignTop2.height + 20, 'grenadeBlue').setScale(0.7).setOrigin(0.5, 0.5).disableBody(true, true);
   }
   update() {
     this.bg.tilePositionY -= 6;
@@ -268,13 +276,11 @@ class Game extends Phaser.Scene {
     }
 
     this.asteroidsSprites.y += 2;
-    rotationValue = rotationValue + 0.04;;
-
+    rotationValue = rotationValue + 0.04;
+    rotationValueForGranide = rotationValueForGranide + 1.8;
     this.asteroidsSprites.children.iterate(function (child) {
 
-      //  Give each star a slightly different bounce
       child.setVelocityY(60)
-
       child.setRotation(rotationValue)
     });
 
@@ -295,39 +301,54 @@ class Game extends Phaser.Scene {
         if (this.alignTop2.body.position.x >= 300) {
 
           if (!this.bombAlreadyMade) {
-            this.grenadeBlue = this.physics.add.sprite(this.alignTop2.body.x + this.alignTop2.width / 2, this.alignTop2.body.y + this.alignTop2.height + 20, 'grenadeBlue').setScale(0.7).setOrigin(0.5, 0.5);
-            this.bombAlreadyMade = true;
+            this.grenadeBlue.body.enable = true;
+            this.grenadeBlue.enableBody(true, this.alignTop2.body.x + this.alignTop2.width / 2, this.alignTop2.body.y + this.alignTop2.height + 20, true, true, true);
+
+            if (this.bombBodyEnabled === false) {
+              this.physics.add.collider(this.monkey, this.grenadeBlue, () => {
+                this.grenadeBlue.disableBody(true, true)
+                this.explosionSound.play()
+                // this.boom.anims.play('explode1');
+                this.add.sprite(this.grenadeBlue.x, this.grenadeBlue.y + this.grenadeBlue.height / 2, 'boom').play('explode1');
+                this.monkey.anims.play('dead1', true)
+                this.monkeyDeadOne = true;
+
+              }, null, this)
+
+              this.bombBodyEnabled = true;
+            }
+
             this.alignTop2.setVelocityX(0);
+
+            this.waitTimer = this.time.delayedCall(5000, () => {
+              this.doneWaitingForBombRotation = true;
+
+            }, [], this);
+            this.bombAlreadyMade = true;
+          }
+
+          if (this.doneWaitingForBombRotation) {
+            this.grenadeBlue.rotation += 0.1;
+            this.grenadeBlue.y += 1;
           }
         }
 
       }
-      // if (this.alignTop2.y >= 60) {
-      // this.alignTop2.setVelocityY(0)
-      // }
-      console.log(this.alignTop2.body.position.y)
       this.alignTop2.setRotation(rotationValue)
     }
-
-
   }
-
-
 }
 function gamedOver(scene, bgMusic, gameOverSound, Game) {
   bgMusic.pause()
   gameOverSound.play()
-  // const button = scene.add.image(300, 300, 'buttonImg').setScale(0.2);
   button.setInteractive({ useHandCursor: true });
   button.inputEnabled = true;
 
   button.on('pointerdown', () => {
-    // Do something when the button is clicked.
     restartGame(scene)
   });
 
   const restartText = scene.add.text(button.x, button.y, 'Restart').setOrigin(0.5, 0.5);
-
   scene.scene.pause(Game);
 
 }
