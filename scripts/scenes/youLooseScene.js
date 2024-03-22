@@ -13,10 +13,9 @@ class YouLooseScene extends Phaser.Scene {
     const button = this.add.image(300, 300, 'buttonImg').setScale(0.2);
     button.setInteractive({ useHandCursor: true });
     this.add.image(300, 200, "youLooseImg").setScale(0.5);
-    console.log('you loose scene')
 
     button.on('pointerdown', () => {
-      this.scene.start("Game")
+      this.scene.start("Level1")
     });
 
     const restartText = this.add.text(button.x, button.y, 'Restart').setOrigin(0.5, 0.5);
