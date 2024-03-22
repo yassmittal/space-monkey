@@ -49,6 +49,7 @@ class Game extends Phaser.Scene {
     this.load.audio('explosion', "./assets/sounds/explosion.mp3")
     this.load.audio('gameOver', "./assets/sounds/gameOver.mp3")
     this.load.audio('levelComplete', "./assets/sounds/levelComplete.mp3")
+    this.load.audio('fallingBomb', "./assets/sounds/fallingBomb.mp3")
 
 
   }
@@ -63,11 +64,11 @@ class Game extends Phaser.Scene {
     this.explosionSound = this.sound.add('explosion')
     const gameOverSound = this.sound.add('gameOver')
     const levelCompleteSound = this.sound.add('levelComplete')
-
-
+    this.fallingBombSound = this.sound.add('fallingBomb')
 
 
     bgMusic.play()
+    bgMusic.loop = true;
     this.score = 0;
     this.bombAlreadyMade = false;
     this.bombBodyEnabled = false;
@@ -151,7 +152,7 @@ class Game extends Phaser.Scene {
     })
 
     this.anims.create({
-      key: 'explode1',
+      key: 'explode',
       frames: this.anims.generateFrameNumbers('boom', { start: 0, end: 23 }),
       frameRate: 20,
       // repeat: -1
@@ -188,7 +189,7 @@ class Game extends Phaser.Scene {
         callAlienShips(this)
       }
 
-      if (this.score >= 10) {
+      if (this.score >= 30) {
         gameWon(this, bgMusic, levelCompleteSound)
       }
     }, null, this)
@@ -292,15 +293,15 @@ class Game extends Phaser.Scene {
       if (this.alignTop2.body.position.y >= 40) {
         this.alignTop2.setVelocityY(0)
 
-        if (this.alignTop2.body.position.x <= 70) {
-          this.alignTop2.setVelocityX(40)
-        } else if (this.alignTop2.body.position.x >= 500) {
-          this.alignTop2.setVelocityX(-40)
-        }
+        var distanceX = this.monkey.x - this.alignTop2.x;
 
-        if (this.alignTop2.body.position.x >= 300) {
+        this.alignTop2.x += distanceX * 0.02;
 
+
+
+        if (Phaser.Math.RoundTo(this.alignTop2.x, 0) == Phaser.Math.RoundTo(this.monkey.x, 0)) {
           if (!this.bombAlreadyMade) {
+            this.grenadeBlue.rotation = 0;
             this.grenadeBlue.body.enable = true;
             this.grenadeBlue.enableBody(true, this.alignTop2.body.x + this.alignTop2.width / 2, this.alignTop2.body.y + this.alignTop2.height + 20, true, true, true);
 
@@ -308,8 +309,7 @@ class Game extends Phaser.Scene {
               this.physics.add.collider(this.monkey, this.grenadeBlue, () => {
                 this.grenadeBlue.disableBody(true, true)
                 this.explosionSound.play()
-                // this.boom.anims.play('explode1');
-                this.add.sprite(this.grenadeBlue.x, this.grenadeBlue.y + this.grenadeBlue.height / 2, 'boom').play('explode1');
+                this.add.sprite(this.grenadeBlue.x, this.grenadeBlue.y + this.grenadeBlue.height / 2, 'boom').play('explode');
                 this.monkey.anims.play('dead1', true)
                 this.monkeyDeadOne = true;
 
@@ -322,15 +322,34 @@ class Game extends Phaser.Scene {
 
             this.waitTimer = this.time.delayedCall(5000, () => {
               this.doneWaitingForBombRotation = true;
+              // this.bombAlreadyMade = false;
+              this.fallingBombSound.play()
+
+              // this.waitTimer2 = this.time.delayedCall(10000, () => {
+              //   this.doneWaitingForBombRotation = false;
+              //   this.bombAlreadyMade = false;
+              //   console.log('waited for 10 seconds')
+              // }, [], this);
 
             }, [], this);
-            this.bombAlreadyMade = true;
-          }
 
-          if (this.doneWaitingForBombRotation) {
-            this.grenadeBlue.rotation += 0.1;
-            this.grenadeBlue.y += 1;
+            this.bombAlreadyMade = true;
+            this.time.delayedCall(10000, () => {
+              // this.doneWaitingForBombRotation = false;
+              this.bombAlreadyMade = false;
+              this.doneWaitingForBombRotation = false;
+
+            }, [], this);
           }
+        }
+
+        if (this.doneWaitingForBombRotation) {
+          this.grenadeBlue.rotation += 0.1;
+          this.grenadeBlue.y += 2;
+        }
+
+        if (this.doneWaitingForBombRotation == false) {
+          this.grenadeBlue.x = this.alignTop2.body.x + this.alignTop2.width / 2;
         }
 
       }
