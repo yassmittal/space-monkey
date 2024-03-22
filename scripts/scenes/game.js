@@ -58,7 +58,7 @@ class Game extends Phaser.Scene {
     this.monkeyDeadOne = false;
     const { width, height } = this.scale;
 
-    const bgMusic = this.sound.add('bgMusic');
+    this.bgMusic = this.sound.add('bgMusic');
     const achievementSound = this.sound.add('achievement');
     const powerUpSound = this.sound.add('powerUp');
     this.explosionSound = this.sound.add('explosion')
@@ -67,8 +67,8 @@ class Game extends Phaser.Scene {
     this.fallingBombSound = this.sound.add('fallingBomb')
 
 
-    bgMusic.play()
-    bgMusic.loop = true;
+    this.bgMusic.play()
+    this.bgMusic.loop = true;
     this.score = 0;
     this.bombAlreadyMade = false;
     this.bombBodyEnabled = false;
@@ -161,14 +161,17 @@ class Game extends Phaser.Scene {
 
 
     this.monkey.anims.play('fly', true)
+    this.monkeyDeadFinally = (scene) => {
+      scene.monkey.anims.play('dead2', true)
+      scene.explosionSound.play()
+      gameOver(scene, scene.bgMusic, gameOverSound)
+
+    }
 
     this.physics.add.collider(this.monkey, this.asteroidsSprites, (child, otherObject) => {
 
       if (this.monkeyDeadOne) {
-        this.monkey.anims.play('dead2', true)
-        this.monkeyDeadOne = false;
-        this.explosionSound.play()
-        gameOver(this, bgMusic, gameOverSound)
+        this.monkeyDeadFinally(this)
         return;
       } else {
         otherObject.disableBody(true, true)
@@ -190,7 +193,7 @@ class Game extends Phaser.Scene {
       }
 
       if (this.score >= 30) {
-        gameWon(this, bgMusic, levelCompleteSound)
+        gameWon(this, this.bgMusic, levelCompleteSound)
       }
     }, null, this)
 
@@ -297,8 +300,6 @@ class Game extends Phaser.Scene {
 
         this.alignTop2.x += distanceX * 0.02;
 
-
-
         if (Phaser.Math.RoundTo(this.alignTop2.x, 0) == Phaser.Math.RoundTo(this.monkey.x, 0)) {
           if (!this.bombAlreadyMade) {
             this.grenadeBlue.rotation = 0;
@@ -307,16 +308,22 @@ class Game extends Phaser.Scene {
 
             if (this.bombBodyEnabled === false) {
               this.physics.add.collider(this.monkey, this.grenadeBlue, () => {
-                this.grenadeBlue.disableBody(true, true)
-                this.explosionSound.play()
-                this.add.sprite(this.grenadeBlue.x, this.grenadeBlue.y + this.grenadeBlue.height / 2, 'boom').play('explode');
-                this.monkey.anims.play('dead1', true)
-                this.monkeyDeadOne = true;
+                if (this.monkeyDeadOne) {
+                  this.monkeyDeadFinally(this)
+                } else {
+                  this.grenadeBlue.disableBody(true, true)
+                  this.explosionSound.play()
+                  this.add.sprite(this.grenadeBlue.x, this.grenadeBlue.y + this.grenadeBlue.height / 2, 'boom').play('explode');
+                  this.monkey.anims.play('dead1', true)
+                  this.monkeyDeadOne = true;
+                }
+
 
               }, null, this)
 
               this.bombBodyEnabled = true;
             }
+
 
             this.alignTop2.setVelocityX(0);
 
