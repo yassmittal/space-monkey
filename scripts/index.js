@@ -1,6 +1,7 @@
 import Level1 from "./scenes/Levels/Level1.js";
 import Level2 from "./scenes/Levels/Level2.js";
 import LevelsShowCase from "./scenes/Levels/levelsShowcase.js";
+import SettingsModal from "./scenes/Modals/settingsModal.js";
 import StartScene from "./scenes/StartScene.js";
 import YouLooseScene from "./scenes/youLooseScene.js";
 import YouWonScene from "./scenes/youWonScene.js"
@@ -15,7 +16,7 @@ const config = {
     }
   },
 
-  scene: [StartScene, LevelsShowCase, Level1, Level2, YouWonScene, YouLooseScene]
+  scene: [Level1, StartScene, LevelsShowCase, SettingsModal, Level2, YouWonScene, YouLooseScene]
 };
 
 new Phaser.Game(config);
