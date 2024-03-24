@@ -1,6 +1,7 @@
 import Level1 from "./scenes/Levels/Level1.js";
 import Level2 from "./scenes/Levels/Level2.js";
 import LevelsShowCase from "./scenes/Levels/levelsShowcase.js";
+import ConfirmModal from "./scenes/Modals/ConfirmModal.js";
 import SettingsModal from "./scenes/Modals/settingsModal.js";
 import StartScene from "./scenes/StartScene.js";
 import YouLooseScene from "./scenes/youLooseScene.js";
@@ -12,11 +13,11 @@ const config = {
   physics: {
     default: 'arcade',
     arcade: {
-      debug: false
+      debug: true
     }
   },
 
-  scene: [Level1, StartScene, LevelsShowCase, SettingsModal, Level2, YouWonScene, YouLooseScene]
+  scene: [Level1, StartScene, LevelsShowCase, SettingsModal, ConfirmModal, Level2, YouWonScene, YouLooseScene]
 };
 
 new Phaser.Game(config);
