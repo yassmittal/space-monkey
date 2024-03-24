@@ -27,15 +27,21 @@ class Level1 extends Phaser.Scene {
 
     this.load.spritesheet('boom', 'assets/spriteSheet/explosion.png', { frameWidth: 64, frameHeight: 64, endFrame: 23 });
 
-    // this.load.image('buttons', 'assets/functionsBtns/buttons.png');
     this.load.spritesheet('buttons',
       'assets/functionsBtns/buttons.png',
       { frameWidth: 125, frameHeight: 128, endFrame: 14 }
     );
 
+    this.load.image('homeIcon', "./assets/functionsBtns/homeIcon.svg")
+
     this.load.spritesheet('buttons2',
       'assets/functionsBtns/buttons.png',
       { frameWidth: 125, frameHeight: 123, endFrame: 14 }
+    );
+
+    this.load.spritesheet('buttons3',
+      'assets/functionsBtns/buttons.png',
+      { frameWidth: 250, frameHeight: 123, endFrame: 14 }
     );
 
 
@@ -94,9 +100,6 @@ class Level1 extends Phaser.Scene {
       this.add.sprite(Phaser.Math.Between(0, width), Phaser.Math.Between(50, height), 'planetsunrise').setScale(0.15),
     ];
 
-    // const button1 = this.add.image(20, 20, 'buttons').setInteractive();
-    // this.load.spritesheet('button1', 'path/to/spritesheet.png', { frameWidth: 100, frameHeight: 100, startFrame: 10, endFrame: 19 });
-    // const button2 = this.add.image(200, 100, 'buttons').setInteractive();
 
 
 
@@ -255,42 +258,26 @@ class Level1 extends Phaser.Scene {
     hamburgetBtn.setFrame(3);
     hamburgetBtn.setInteractive({ useHandCursor: true });
 
-    hamburgetBtn.on('pointerdown', () => {
-      // console.log('working')
-      // this.createWindow(Juggler);
-      this.scene.launch('SettingsModal', { bgMusic: this.bgMusic })
+    const homeBtn = this.add.sprite(width - 110, 46, 'buttons2').setScale(0.5);
+    homeBtn.setFrame(9);
+    homeBtn.setInteractive({ useHandCursor: true });
+
+    this.add.image(homeBtn.x, homeBtn.y, "homeIcon").setOrigin(0.4, 0.55).setScale(0.9)
+
+    homeBtn.on('pointerdown', () => {
+      this.scene.launch('ConfirmModal', {
+        confirmMsg: "Your Game Will be Ended\nAre you confirm?\nYou want to end the game\nand Go To Home Page",
+        scene: this
+      })
       this.scene.pause();
     });
 
-
+    hamburgetBtn.on('pointerdown', () => {
+      this.scene.launch('SettingsModal', { bgMusic: this.bgMusic, scene: this })
+      this.scene.pause();
+    });
 
   }
-
-  // createWindow(func) {
-  //   var x = 200;
-  //   var y = 200;
-
-  //   var handle = 'window' + this.count++;
-
-  //   var win = this.add.zone(x, y, func.WIDTH, func.HEIGHT).setInteractive().setOrigin(0);
-
-  //   var demo = new func(handle, win);
-
-  //   this.input.setDraggable(win);
-
-  //   win.on('drag', function (pointer, dragX, dragY) {
-
-  //     this.x = dragX;
-  //     this.y = dragY;
-
-  //     demo.refresh()
-
-  //   });
-
-  //   this.scene.add(handle, demo, true);
-  // }
-
-
 
   update() {
 
