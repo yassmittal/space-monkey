@@ -8,7 +8,6 @@ class ConfirmModal extends Phaser.Scene {
     this.levelScene = data.scene;
   }
 
-
   preload() {
     this.load.image('modalBg', "./assets/others/modalBG.png")
   }
@@ -17,12 +16,12 @@ class ConfirmModal extends Phaser.Scene {
 
     this.modalOpened = false;
 
-
     this.modalBg = this.add.image(140, -200, 'modalBg').setOrigin(0).setScale(0.8);
 
-    this.crossBtn = this.add.sprite(this.modalBg.x + this.modalBg.width - 60, this.modalBg.y + 50, 'buttons').setScale(0.5).setOrigin(1, 1);
+    this.crossBtn = this.add.sprite(this.modalBg.x + this.modalBg.width - 60, this.modalBg.y + 50, 'buttons').setScale(0.5).setOrigin(1, 1)
+      .setInteractive({ useHandCursor: true });
     this.crossBtn.setFrame(6);
-    this.crossBtn.setInteractive({ useHandCursor: true });
+
 
     this.YesBtn = this.add.sprite(this.modalBg.x + this.modalBg.width / 4, this.modalBg.y + this.modalBg.height / 2 + 30, 'buttons3').setScale(0.5)
     this.YesBtn.setFrame(5);
@@ -33,12 +32,10 @@ class ConfirmModal extends Phaser.Scene {
       this.scene.launch('LevelsShowCase')
     });
 
-
     this.YesBtnText = this.add.text(this.YesBtn.x - this.YesBtn.width / 10, this.YesBtn.y - this.YesBtn.height / 10, "Yes", {
       fontSize: '24px',
       fontStyle: "700",
     })
-
 
     this.NoBtn = this.add.sprite(this.modalBg.x + (this.modalBg.width / 2 + 35), this.modalBg.y + this.modalBg.height / 2 + 30, 'buttons3').setScale(0.5)
     this.NoBtn.setFrame(5);
@@ -59,6 +56,19 @@ class ConfirmModal extends Phaser.Scene {
       this.modalOpened = true;
       this.scene.resume('Level1')
     });
+
+
+    this.YesBtn.on('pointerover', () => {
+      console.log('hovering')
+      this.YesBtn.setFrame(7);
+      this.YesBtn.y += 2;
+    })
+
+    this.YesBtn.on('pointerout', () => {
+      this.YesBtn.setFrame(5);
+      this.YesBtn.y -= 2;
+
+    })
 
     this.confirmMsgText = this.add.text(this.modalBg.x + 35, this.modalBg.y + 40, `${this.confirmMsg}`, {
       fontSize: '18px',
