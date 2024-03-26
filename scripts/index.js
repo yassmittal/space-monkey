@@ -17,7 +17,7 @@ const config = {
     }
   },
 
-  scene: [Level1, StartScene, LevelsShowCase, SettingsModal, ConfirmModal, Level2, YouWonScene, YouLooseScene]
+  scene: [StartScene, Level1, Level2, LevelsShowCase, SettingsModal, ConfirmModal, YouWonScene, YouLooseScene]
 };
 
 new Phaser.Game(config);

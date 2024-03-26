@@ -3,6 +3,10 @@ class LevelsShowCase extends Phaser.Scene {
     super({ key: 'LevelsShowCase' });
   }
 
+  init(data) {
+    this.bgMusic = data.bgMusic;
+  }
+
   preload() {
     this.load.image('buttonImg', "./assets/buttons/buttonImg.png")
     this.load.image('startImg', "./assets/others/starterImg.png")
@@ -30,7 +34,7 @@ class LevelsShowCase extends Phaser.Scene {
       levelBtn.setInteractive({ useHandCursor: true });
       levelBtn.on('pointerdown', () => {
         console.log(`Level${currentLevel}`)
-        this.scene.start(`Level${currentLevel}`)
+        this.scene.start(`Level${currentLevel}`, { bgMusic: this.bgMusic })
       });
 
       this.add.text(levelBtn.x + 35, levelBtn.y + 26, `Level ${currentLevel}`);

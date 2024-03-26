@@ -8,6 +8,10 @@ class Level1 extends Phaser.Scene {
     })
   }
 
+  init(data) {
+    this.bgMusic = data.bgMusic;
+  }
+
   preload() {
 
     this.asteroids = ["asteroid1", "asteroid2", "asteroid3"];
@@ -57,7 +61,6 @@ class Level1 extends Phaser.Scene {
 
     this.load.image('spaceFlier', "./assets/objects/spaceFlier/spaceflier_01_a.png")
 
-    this.load.audio('bgMusic', './assets/sounds/backgroundMusic.mp3');
     this.load.audio('achievement', './assets/sounds/achievement.wav');
     this.load.audio('powerUp', "./assets/sounds/powerUp.mp3")
     this.load.audio('explosion', "./assets/sounds/explosion.mp3")
@@ -72,7 +75,7 @@ class Level1 extends Phaser.Scene {
     this.monkeyDeadOne = false;
     const { width, height } = this.scale;
 
-    this.bgMusic = this.sound.add('bgMusic');
+
     const achievementSound = this.sound.add('achievement');
     const powerUpSound = this.sound.add('powerUp');
     this.explosionSound = this.sound.add('explosion')
@@ -81,8 +84,7 @@ class Level1 extends Phaser.Scene {
     this.fallingBombSound = this.sound.add('fallingBomb')
 
 
-    this.bgMusic.play()
-    this.bgMusic.loop = true;
+
     this.score = 0;
     this.bombAlreadyMade = false;
     this.bombBodyEnabled = false;
@@ -99,9 +101,6 @@ class Level1 extends Phaser.Scene {
       this.add.sprite(Phaser.Math.Between(0, width), Phaser.Math.Between(50, height), 'galaxy').setScale(0.2),
       this.add.sprite(Phaser.Math.Between(0, width), Phaser.Math.Between(50, height), 'planetsunrise').setScale(0.15),
     ];
-
-
-
 
     this.banana = this.physics.add.sprite(width / 2, -50, 'banana')
       .setScale(0.6);
