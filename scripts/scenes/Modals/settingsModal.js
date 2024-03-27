@@ -33,8 +33,6 @@ class SettingsModal extends Phaser.Scene {
     this.restartBtn.on('pointerdown', () => {
       this.levelScene.scene.restart()
       this.modalOpened = true;
-      console.log('restarting the scene');
-
     })
 
     const settingBtns = []
@@ -73,7 +71,7 @@ class SettingsModal extends Phaser.Scene {
 
     this.crossBtn.on('pointerdown', () => {
       this.modalOpened = true;
-      this.scene.resume('Level1')
+      this.scene.resume(`${this.levelScene}`)
     });
 
 

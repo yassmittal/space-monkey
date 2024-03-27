@@ -15,7 +15,6 @@ class Level1 extends Phaser.Scene {
   preload() {
 
     this.asteroids = ["asteroid1", "asteroid2", "asteroid3"];
-
     this.asteroids.forEach(asteroid => {
       this.load.image(`${asteroid}`, `./assets/tackels/${asteroid}.png`)
     })
@@ -94,6 +93,11 @@ class Level1 extends Phaser.Scene {
     this.bg = this.add.tileSprite(0, 0, width * 5 / 2, height * 5 / 2, 'background').setOrigin(0, 0).setScale(0.4);
 
     this.alignTop2 = this.physics.add.sprite(100, -70, 'alignTop2');
+
+    this.add.text(250, 10, 'Level 1', {
+      fontSize: '32px',
+      fontWeight: "700",
+    })
 
 
     this.showcaseObjects = [
@@ -204,7 +208,7 @@ class Level1 extends Phaser.Scene {
         callAlienShips(this)
       }
 
-      if (this.score >= 3) {
+      if (this.score >= 12) {
         gameWon(this, this.bgMusic, levelCompleteSound)
       }
     }, null, this)
@@ -327,7 +331,7 @@ class Level1 extends Phaser.Scene {
     });
 
 
-    if (this.score >= 1) {
+    if (this.score >= 6) {
 
       this.alignTop2.setVelocityY(40)
 
@@ -409,12 +413,10 @@ function gameWon(scene, bgMusic, levelCompleteSound) {
   scene.anims.remove('fly');
   scene.anims.remove('dead1');
   scene.anims.remove('dead2');
-  scene.scene.launch("YouWonScene");
+  scene.scene.launch("YouWonScene", { nextLevel: "Level2", currentLevel: "Level1", bgMusic: bgMusic });
   bgMusic.pause();
   levelCompleteSound.play();
 }
 
-function restartGame(scene) {
-  scene.scene.resume();
-}
+
 export default Level1;

@@ -1,10 +1,10 @@
 let rotationValue = 0;
 let rotationValueForGranide = 0;
-class Level2 extends Phaser.Scene {
+class Level3 extends Phaser.Scene {
 
   constructor() {
     super({
-      key: "Level2"
+      key: "Level3"
     })
   }
 
@@ -95,10 +95,11 @@ class Level2 extends Phaser.Scene {
 
     this.alignTop2 = this.physics.add.sprite(100, -70, 'alignTop2');
 
-    this.add.text(250, 10, 'Level 2', {
+    this.add.text(250, 10, 'Level 3', {
       fontSize: '32px',
       fontWeight: "700",
     })
+
 
     this.showcaseObjects = [
       this.add.sprite(Phaser.Math.Between(0, width), Phaser.Math.Between(50, height), 'anamoly').setScale(0.4),
@@ -413,10 +414,10 @@ function gameWon(scene, bgMusic, levelCompleteSound) {
   scene.anims.remove('fly');
   scene.anims.remove('dead1');
   scene.anims.remove('dead2');
-  scene.scene.launch("YouWonScene", { nextLevel: "Level3", currentLevel: "Level2", bgMusic: bgMusic });
+  scene.scene.launch("YouWonScene", { nextLevel: "Level4", currentLevel: "Level3", bgMusic: bgMusic });
   bgMusic.pause();
   levelCompleteSound.play();
 }
 
 
-export default Level2;
+export default Level3;

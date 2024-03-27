@@ -3,21 +3,41 @@ class YouWonScene extends Phaser.Scene {
     super({ key: 'YouWonScene' });
   }
 
+  init(data) {
+    this.nextLevel = data.nextLevel;
+    this.currentLevel = data.currentLevel;
+    this.bgMusic = data.bgMusic
+  }
+
   preload() {
     this.load.image('buttonImg', "./assets/buttons/buttonImg.png")
     this.load.image('youWinImg', "./assets/others/youWinImg.png")
   }
 
   create() {
-    const button = this.add.image(300, 300, 'buttonImg').setScale(0.2);
+    // const button = this.add.image(300, 300, 'buttonImg').setScale(0.2);
+    const youWonBtn = this.add.image(220, 300, 'buttonImg').setScale(0.2);
     this.add.image(300, 200, "youWinImg").setScale(0.5);
-    button.setInteractive({ useHandCursor: true });
+    youWonBtn.setInteractive({ useHandCursor: true });
 
-    button.on('pointerdown', () => {
-      this.scene.start("Level1")
+    const nextLevelBtn = this.add.image(380, 300, 'buttonImg').setScale(0.2);
+    this.add.image(300, 200, "youWinImg").setScale(0.5);
+    nextLevelBtn.setInteractive({ useHandCursor: true });
+
+    youWonBtn.on('pointerdown', () => {
+      this.scene.start(`${this.currentLevel}`)
+
+      if (this.bgMusic.isPlaying) {
+        this.bgMusic.resume()
+      }
     });
 
-    const restartText = this.add.text(button.x, button.y, 'Restart').setOrigin(0.5, 0.5);
+    nextLevelBtn.on('pointerdown', () => {
+      this.scene.start(`${this.nextLevel}`)
+    });
+
+    const restartText = this.add.text(youWonBtn.x, youWonBtn.y, 'Restart').setOrigin(0.5, 0.5);
+    const NextLevelText = this.add.text(nextLevelBtn.x, nextLevelBtn.y, 'Next Level').setOrigin(0.5, 0.5);
   }
 }
 
