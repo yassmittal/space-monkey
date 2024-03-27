@@ -8,10 +8,13 @@ class Level1 extends Phaser.Scene {
     })
   }
 
+  init(data) {
+    this.bgMusic = data.bgMusic;
+  }
+
   preload() {
 
     this.asteroids = ["asteroid1", "asteroid2", "asteroid3"];
-
     this.asteroids.forEach(asteroid => {
       this.load.image(`${asteroid}`, `./assets/tackels/${asteroid}.png`)
     })
@@ -57,7 +60,6 @@ class Level1 extends Phaser.Scene {
 
     this.load.image('spaceFlier', "./assets/objects/spaceFlier/spaceflier_01_a.png")
 
-    this.load.audio('bgMusic', './assets/sounds/backgroundMusic.mp3');
     this.load.audio('achievement', './assets/sounds/achievement.wav');
     this.load.audio('powerUp', "./assets/sounds/powerUp.mp3")
     this.load.audio('explosion', "./assets/sounds/explosion.mp3")
@@ -72,7 +74,7 @@ class Level1 extends Phaser.Scene {
     this.monkeyDeadOne = false;
     const { width, height } = this.scale;
 
-    this.bgMusic = this.sound.add('bgMusic');
+
     const achievementSound = this.sound.add('achievement');
     const powerUpSound = this.sound.add('powerUp');
     this.explosionSound = this.sound.add('explosion')
@@ -81,8 +83,7 @@ class Level1 extends Phaser.Scene {
     this.fallingBombSound = this.sound.add('fallingBomb')
 
 
-    this.bgMusic.play()
-    this.bgMusic.loop = true;
+
     this.score = 0;
     this.bombAlreadyMade = false;
     this.bombBodyEnabled = false;
@@ -93,15 +94,17 @@ class Level1 extends Phaser.Scene {
 
     this.alignTop2 = this.physics.add.sprite(100, -70, 'alignTop2');
 
+    this.add.text(250, 10, 'Level 1', {
+      fontSize: '32px',
+      fontWeight: "700",
+    })
+
 
     this.showcaseObjects = [
       this.add.sprite(Phaser.Math.Between(0, width), Phaser.Math.Between(50, height), 'anamoly').setScale(0.4),
       this.add.sprite(Phaser.Math.Between(0, width), Phaser.Math.Between(50, height), 'galaxy').setScale(0.2),
       this.add.sprite(Phaser.Math.Between(0, width), Phaser.Math.Between(50, height), 'planetsunrise').setScale(0.15),
     ];
-
-
-
 
     this.banana = this.physics.add.sprite(width / 2, -50, 'banana')
       .setScale(0.6);
@@ -205,7 +208,7 @@ class Level1 extends Phaser.Scene {
         callAlienShips(this)
       }
 
-      if (this.score >= 3) {
+      if (this.score >= 12) {
         gameWon(this, this.bgMusic, levelCompleteSound)
       }
     }, null, this)
@@ -328,7 +331,7 @@ class Level1 extends Phaser.Scene {
     });
 
 
-    if (this.score >= 1) {
+    if (this.score >= 6) {
 
       this.alignTop2.setVelocityY(40)
 
@@ -410,12 +413,10 @@ function gameWon(scene, bgMusic, levelCompleteSound) {
   scene.anims.remove('fly');
   scene.anims.remove('dead1');
   scene.anims.remove('dead2');
-  scene.scene.launch("YouWonScene");
+  scene.scene.launch("YouWonScene", { nextLevel: "Level2", currentLevel: "Level1", bgMusic: bgMusic });
   bgMusic.pause();
   levelCompleteSound.play();
 }
 
-function restartGame(scene) {
-  scene.scene.resume();
-}
+
 export default Level1;

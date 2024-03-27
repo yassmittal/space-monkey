@@ -9,13 +9,7 @@ class SettingsModal extends Phaser.Scene {
   }
 
   preload() {
-    // this.load.image('buttonImg', "./assets/buttons/buttonImg.png")
-    // this.load.image('startImg', "./assets/others/starterImg.png")
     this.load.image('modalBg', "./assets/others/modalBG.png")
-    // this.load.spritesheet('buttons',
-    //   'assets/functionsBtns/buttons.png',
-    //   { frameWidth: 125, frameHeight: 128, endFrame: 14 })
-
   }
 
   create() {
@@ -28,31 +22,32 @@ class SettingsModal extends Phaser.Scene {
     this.crossBtn.setFrame(6);
     this.crossBtn.setInteractive({ useHandCursor: true });
 
-    this.musicBtn = this.add.sprite(0, 0, 'buttons2').setScale(0.5).setOrigin(1, 1);
+    this.musicBtn = this.add.sprite(0, 0, 'buttons2').setScale(0.5);
     this.musicBtn.setFrame(8);
     this.musicBtn.setInteractive({ useHandCursor: true });
 
-    this.restartBtn = this.add.sprite(0, 0, 'buttons').setScale(0.5).setOrigin(1, 1);
+    this.restartBtn = this.add.sprite(0, 0, 'buttons').setScale(0.5);
     this.restartBtn.setFrame(5);
     this.restartBtn.setInteractive({ useHandCursor: true });
 
     this.restartBtn.on('pointerdown', () => {
       this.levelScene.scene.restart()
       this.modalOpened = true;
-      console.log('restarting the scene');
-
     })
 
     const settingBtns = []
-    // let this.musicIconPauseText = this.add.text(this.musicBtn.x - 45, this.musicBtn.y - 62, '', {
-    //   fontSize: '70px',
-    //   fontWeight: "900",
-    // })
-
-    settingBtns.push(this.musicBtn)
     settingBtns.push(this.restartBtn)
+    settingBtns.push(this.musicBtn)
 
-    this.musicIconPauseText = this.add.text(this.musicBtn.x - 45, this.musicBtn.y - 62, '', {
+    Phaser.Actions.GridAlign(settingBtns, {
+      width: 2,
+      cellWidth: 60,
+      cellHeight: 30,
+      x: this.modalBg.x + this.modalBg.width / 7,
+      y: this.modalBg.y + this.modalBg.height / 8
+    });
+
+    this.musicIconPauseText = this.add.text(304, -139, '', {
       fontSize: '70px',
       fontWeight: "900",
     })
@@ -61,11 +56,9 @@ class SettingsModal extends Phaser.Scene {
       if (this.bgMusic.isPlaying) {
         this.bgMusic.pause();
         this.musicIconPauseText.setText('/')
-        console.log('adding text')
       } else {
         this.bgMusic.play();
         this.musicIconPauseText.setText('')
-        console.log('removing text')
       }
     });
 
@@ -78,16 +71,10 @@ class SettingsModal extends Phaser.Scene {
 
     this.crossBtn.on('pointerdown', () => {
       this.modalOpened = true;
-      this.scene.resume('Level1')
+      this.scene.resume(`${this.levelScene}`)
     });
 
-    Phaser.Actions.GridAlign(settingBtns, {
-      width: 3,
-      cellWidth: 100,
-      cellHeight: 10,
-      x: this.modalBg.x,
-      y: this.modalBg.y
-    });
+
 
   }
 
