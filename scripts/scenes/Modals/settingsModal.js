@@ -15,6 +15,7 @@ class SettingsModal extends Phaser.Scene {
   create() {
 
     this.modalOpened = false;
+    this.clickSound = this.sound.add('clickSound')
 
     this.modalBg = this.add.image(140, -200, 'modalBg').setOrigin(0).setScale(0.8);
 
@@ -31,9 +32,11 @@ class SettingsModal extends Phaser.Scene {
     this.restartBtn.setInteractive({ useHandCursor: true });
 
     this.restartBtn.on('pointerdown', () => {
+      this.clickSound.play()
       this.levelScene.scene.restart()
       this.modalOpened = true;
     })
+
 
     const settingBtns = []
     settingBtns.push(this.restartBtn)
@@ -52,6 +55,7 @@ class SettingsModal extends Phaser.Scene {
       fontWeight: "900",
     })
     this.musicBtn.on('pointerdown', () => {
+      this.clickSound.play()
 
       if (this.bgMusic.isPlaying) {
         this.bgMusic.pause();
@@ -70,15 +74,17 @@ class SettingsModal extends Phaser.Scene {
     }
 
     this.crossBtn.on('pointerdown', () => {
+      this.clickSound.play()
+
       this.modalOpened = true;
-      this.scene.resume(`${this.levelScene}`)
+      this.levelScene.scene.resume()
     });
-
-
 
   }
 
   update() {
+
+    console.log(this.modalBg.y)
 
     if (this.modalOpened == false) {
       if (this.modalBg.y >= 200) return;

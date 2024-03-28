@@ -27,13 +27,13 @@ class YouWonScene extends Phaser.Scene {
     youWonBtn.on('pointerdown', () => {
       this.scene.start(`${this.currentLevel}`)
 
-      if (this.bgMusic.isPlaying) {
-        this.bgMusic.resume()
-      }
+      // if (this.bgMusic.isPlaying) {
+      this.bgMusic.resume()
+      // }
     });
 
     nextLevelBtn.on('pointerdown', () => {
-      this.scene.start(`${this.nextLevel}`)
+      this.scene.start(`${this.nextLevel}`, { bgMusic: this.bgMusic })
     });
 
     const restartText = this.add.text(youWonBtn.x, youWonBtn.y, 'Restart').setOrigin(0.5, 0.5);
