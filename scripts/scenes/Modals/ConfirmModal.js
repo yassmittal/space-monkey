@@ -10,6 +10,7 @@ class ConfirmModal extends Phaser.Scene {
 
   preload() {
     this.load.image('modalBg', "./assets/others/modalBG.png")
+    this.clickSound = this.sound.add('clickSound')
   }
 
   create() {
@@ -28,6 +29,7 @@ class ConfirmModal extends Phaser.Scene {
     this.YesBtn.setInteractive({ useHandCursor: true });
 
     this.YesBtn.on('pointerdown', () => {
+      this.clickSound.play()
       this.modalOpened = true;
       this.scene.launch('LevelsShowCase')
     });
@@ -47,14 +49,16 @@ class ConfirmModal extends Phaser.Scene {
     })
 
     this.NoBtn.on('pointerdown', () => {
+      this.clickSound.play()
       this.modalOpened = true;
       this.levelScene.scene.resume()
     });
 
 
     this.crossBtn.on('pointerdown', () => {
+      this.clickSound.play()
       this.modalOpened = true;
-      this.scene.resume('Level1')
+      this.levelScene.scene.resume()
     });
 
 

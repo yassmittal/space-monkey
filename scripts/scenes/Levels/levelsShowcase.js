@@ -14,6 +14,7 @@ class LevelsShowCase extends Phaser.Scene {
 
   create() {
     this.add.image(300, 300, 'startImg').setScale(0.8);
+    this.clickSound = this.sound.add('clickSound')
 
     const levelBtns = [];
     for (let i = 0; i < 12; i++) {
@@ -33,6 +34,7 @@ class LevelsShowCase extends Phaser.Scene {
       let currentLevel = ++index;
       levelBtn.setInteractive({ useHandCursor: true });
       levelBtn.on('pointerdown', () => {
+        this.clickSound.play()
         console.log(`Level${currentLevel}`)
         this.scene.start(`Level${currentLevel}`, { bgMusic: this.bgMusic })
       });

@@ -1,3 +1,5 @@
+import createAnimations from "../animations.js";
+
 let rotationValue = 0;
 let rotationValueForGranide = 0;
 class Level8 extends Phaser.Scene {
@@ -16,57 +18,7 @@ class Level8 extends Phaser.Scene {
 
     this.asteroids = ["asteroid1", "asteroid2", "asteroid3"];
 
-    this.asteroids.forEach(asteroid => {
-      this.load.image(`${asteroid}`, `./assets/tackels/${asteroid}.png`)
-    })
 
-    this.load.image('background', "./assets/background/bg_single_1536x3840.png");
-    this.load.image('anamoly', "./assets/objects/spaceObjects/space_object_anomaly.png")
-    this.load.image('galaxy', "./assets/objects/spaceObjects/space_object_galaxy.png")
-    this.load.image('planetsunrise', "./assets/objects/spaceObjects/space_object_planetsunrise.png")
-
-
-    this.load.atlas('monkey',
-      './assets/spriteSheet/monkey/monkey.png', './assets/spriteSheet/monkey/monkey.json');
-
-    this.load.spritesheet('boom', 'assets/spriteSheet/explosion.png', { frameWidth: 64, frameHeight: 64, endFrame: 23 });
-
-    this.load.spritesheet('buttons',
-      'assets/functionsBtns/buttons.png',
-      { frameWidth: 125, frameHeight: 128, endFrame: 14 }
-    );
-
-    this.load.image('homeIcon', "./assets/functionsBtns/homeIcon.svg")
-
-    this.load.spritesheet('buttons2',
-      'assets/functionsBtns/buttons.png',
-      { frameWidth: 125, frameHeight: 123, endFrame: 14 }
-    );
-
-    this.load.spritesheet('buttons3',
-      'assets/functionsBtns/buttons.png',
-      { frameWidth: 250, frameHeight: 123, endFrame: 14 }
-    );
-
-
-    this.load.image('banana', "./assets/tackels/powerup_banana.png")
-    this.load.image('powerUpBlue', "./assets/tackels/powerup_blue.png")
-    this.load.image('powerUpRed', "./assets/tackels/powerup_red.png")
-
-    this.load.image('alienSideGreen', "./assets/objects/enemies/alien_side_green.png")
-    this.load.image('alignTop1', "./assets/objects/enemies/alien_top_01.png")
-    this.load.image('alignTop2', "./assets/objects/enemies/alien_top_02.png")
-
-    this.load.image('grenadeBlue', "./assets/tackels/object_grenade_blue.png")
-
-    this.load.image('spaceFlier', "./assets/objects/spaceFlier/spaceflier_01_a.png")
-
-    this.load.audio('achievement', './assets/sounds/achievement.wav');
-    this.load.audio('powerUp', "./assets/sounds/powerUp.mp3")
-    this.load.audio('explosion', "./assets/sounds/explosion.mp3")
-    this.load.audio('gameOver', "./assets/sounds/gameOver.mp3")
-    this.load.audio('levelComplete', "./assets/sounds/levelComplete.mp3")
-    this.load.audio('fallingBomb', "./assets/sounds/fallingBomb.mp3")
 
 
   }
@@ -82,6 +34,8 @@ class Level8 extends Phaser.Scene {
     const gameOverSound = this.sound.add('gameOver')
     const levelCompleteSound = this.sound.add('levelComplete')
     this.fallingBombSound = this.sound.add('fallingBomb')
+
+    this.clickSound = this.sound.add('clickSound')
 
 
 
@@ -146,36 +100,7 @@ class Level8 extends Phaser.Scene {
       .setCollideWorldBounds(true);
 
 
-
-    this.anims.create({
-      key: 'fly',
-      frames: this.anims.generateFrameNames('monkey', {
-        start: 1,
-        end: 2,
-        prefix: "spacemonkey_fly0",
-        suffix: ".png"
-      }),
-      frameRate: 4,
-      repeat: -1,
-    });
-
-    this.anims.create({
-      key: 'dead1',
-      frames: [{ key: "monkey", frame: "spacemonkey_dead01.png" }],
-      repeat: -1
-    })
-
-    this.anims.create({
-      key: 'dead2',
-      frames: [{ key: "monkey", frame: "spacemonkey_dead02.png" }],
-      repeat: -1
-    })
-
-    this.anims.create({
-      key: 'explode',
-      frames: this.anims.generateFrameNumbers('boom', { start: 0, end: 23 }),
-      frameRate: 20,
-    })
+    createAnimations(this);
 
     this.monkey.anims.play('fly', true)
     this.monkeyDeadFinally = (scene) => {
@@ -269,6 +194,7 @@ class Level8 extends Phaser.Scene {
     this.add.image(homeBtn.x, homeBtn.y, "homeIcon").setOrigin(0.4, 0.55).setScale(0.9)
 
     homeBtn.on('pointerdown', () => {
+      this.clickSound.play()
       this.scene.launch('ConfirmModal', {
         confirmMsg: "Your Game Will be Ended\nAre you confirm?\nYou want to end the game\nand Go To Home Page",
         scene: this
@@ -277,9 +203,11 @@ class Level8 extends Phaser.Scene {
     });
 
     hamburgetBtn.on('pointerdown', () => {
+      this.clickSound.play()
       this.scene.launch('SettingsModal', { bgMusic: this.bgMusic, scene: this })
       this.scene.pause();
     });
+
 
   }
 
