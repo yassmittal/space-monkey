@@ -28,7 +28,7 @@ const config = {
     }
   },
 
-  scene: [StartScene, Level1, Level2, Level3, Level4, Level5, Level6, Level7, Level8, Level9, Level10, Level11, Level12, LevelsShowCase, SettingsModal, ConfirmModal, YouWonScene, YouLooseScene]
+  scene: [StartScene, LevelsShowCase, SettingsModal, ConfirmModal, YouWonScene, YouLooseScene, Level1, Level2, Level3, Level4, Level5, Level6, Level7, Level8, Level9, Level10, Level11, Level12]
 };
 
 new Phaser.Game(config);
