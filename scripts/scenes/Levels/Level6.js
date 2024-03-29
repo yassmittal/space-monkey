@@ -14,13 +14,20 @@ class Level6 extends Phaser.Scene {
     this.bgMusic = data.bgMusic;
   }
 
+  initAnimations() {
+    // Remove existing animations
+    this.anims.remove('fly');
+    this.anims.remove('dead1');
+    this.anims.remove('dead2');
+    this.anims.remove('explode');
+
+    // Create animations
+    createAnimations(this);
+  }
+
+
   preload() {
-
     this.asteroids = ["asteroid1", "asteroid2", "asteroid3"];
-
-
-
-
   }
   create() {
 
@@ -99,8 +106,7 @@ class Level6 extends Phaser.Scene {
       .setScale(0.6)
       .setCollideWorldBounds(true);
 
-
-    createAnimations(this);
+    this.initAnimations();
 
     this.monkey.anims.play('fly', true)
     this.monkeyDeadFinally = (scene) => {
@@ -334,7 +340,7 @@ function gameOver(scene, bgMusic, gameOverSound, Game) {
   scene.anims.remove('fly');
   scene.anims.remove('dead1');
   scene.anims.remove('dead2');
-  scene.scene.launch("YouLooseScene");
+  scene.scene.launch("YouLooseScene", { scene: this, bgMusic: bgMusic, currentLevel: "Level6" });
 }
 
 function gameWon(scene, bgMusic, levelCompleteSound) {

@@ -32,6 +32,7 @@ class ConfirmModal extends Phaser.Scene {
       this.clickSound.play()
       this.modalOpened = true;
       this.scene.launch('LevelsShowCase')
+      this.levelScene.scene.stop();
     });
 
     this.YesBtnText = this.add.text(this.YesBtn.x - this.YesBtn.width / 10, this.YesBtn.y - this.YesBtn.height / 10, "Yes", {
