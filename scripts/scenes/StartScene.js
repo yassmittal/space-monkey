@@ -75,6 +75,7 @@ class StartScene extends Phaser.Scene {
 
     button.setInteractive({ useHandCursor: true });
     button.on('pointerdown', () => {
+      this.scene.stop();
       this.scene.start("LevelsShowCase", { bgMusic: this.bgMusic })
       this.clickSound.play()
     });
