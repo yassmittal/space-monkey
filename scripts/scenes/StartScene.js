@@ -4,6 +4,7 @@ class StartScene extends Phaser.Scene {
   }
 
   preload() {
+    this.load.image('modalBg', "./assets/others/modalBG.png")
     this.load.image('buttonImg', "./assets/buttons/buttonImg.png")
     this.load.image('startImg', "./assets/others/starterImg.png")
     this.load.audio('bgMusic', './assets/sounds/backgroundMusic.mp3');

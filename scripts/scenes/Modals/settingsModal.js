@@ -8,10 +8,6 @@ class SettingsModal extends Phaser.Scene {
     this.levelScene = data.scene;
   }
 
-  preload() {
-    this.load.image('modalBg', "./assets/others/modalBG.png")
-  }
-
   create() {
 
     this.modalOpened = false;
