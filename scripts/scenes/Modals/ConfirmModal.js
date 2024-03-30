@@ -9,12 +9,10 @@ class ConfirmModal extends Phaser.Scene {
   }
 
   preload() {
-    this.load.image('modalBg', "./assets/others/modalBG.png")
-    this.clickSound = this.sound.add('clickSound')
   }
 
   create() {
-
+    this.clickSound = this.sound.add('clickSound')
     this.modalOpened = false;
 
     this.modalBg = this.add.image(140, -200, 'modalBg').setOrigin(0).setScale(0.8);
