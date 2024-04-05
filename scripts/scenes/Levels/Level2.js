@@ -69,7 +69,7 @@ class Level2 extends Phaser.Scene {
       this.add.sprite(Phaser.Math.Between(0, width), Phaser.Math.Between(50, height), 'planetsunrise').setScale(0.15),
     ];
 
-    this.banana = this.physics.add.sprite(width / 2, -50, 'banana')
+    this.banana = this.physics.add.sprite(Phaser.Math.Between(0, width), -50, 'banana')
       .setScale(0.6);
 
     this.physics.add.sprite(30, 20, 'banana')
@@ -80,7 +80,7 @@ class Level2 extends Phaser.Scene {
       fontWeight: "700",
     })
 
-    this.powerUpBlue = this.physics.add.sprite(width / 2, 0, 'powerUpBlue')
+    this.powerUpBlue = this.physics.add.sprite(Phaser.Math.Between(0, width), 0, 'powerUpBlue')
       .setScale(0.7);
 
     this.asteroidsSprites = this.physics.add.group();
@@ -136,7 +136,7 @@ class Level2 extends Phaser.Scene {
       achievementSound.play()
       scoreText.setText(`:${this.score}`)
 
-      if (this.score >= 6) {
+      if (this.score >= 1) {
         callAlienShips(this)
       }
 
@@ -221,14 +221,14 @@ class Level2 extends Phaser.Scene {
 
     this.bg.tilePositionY -= 6;
 
-    this.banana.y += 2;
+    this.banana.y += 3;
 
-    this.powerUpBlue.y += 1;
+    this.powerUpBlue.y += 2;
 
     this.showcaseObjects.forEach((object, index) => {
-      this.showcaseObjects[0].y += 0.4;
-      this.showcaseObjects[1].y += 1;
-      this.showcaseObjects[2].y += 1.2;
+      this.showcaseObjects[0].y += 0.6;
+      this.showcaseObjects[1].y += 1.2;
+      this.showcaseObjects[2].y += 1.4;
 
       if (object.y > 800) {
         object.x = Phaser.Math.Between(0, 600);
@@ -266,7 +266,7 @@ class Level2 extends Phaser.Scene {
     });
 
 
-    if (this.score >= 6) {
+    if (this.score >= 1) {
 
       this.alignTop2.setVelocityY(40)
 
@@ -301,7 +301,6 @@ class Level2 extends Phaser.Scene {
               this.bombBodyEnabled = true;
             }
 
-
             this.alignTop2.setVelocityX(0);
 
             this.waitTimer = this.time.delayedCall(5000, () => {
@@ -320,8 +319,8 @@ class Level2 extends Phaser.Scene {
         }
 
         if (this.doneWaitingForBombRotation) {
-          this.grenadeBlue.rotation += 0.1;
-          this.grenadeBlue.y += 2;
+          this.grenadeBlue.rotation += 0.2;
+          this.grenadeBlue.y += 3;
         }
 
         if (this.doneWaitingForBombRotation == false) {
