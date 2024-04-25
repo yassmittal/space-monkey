@@ -44,13 +44,10 @@ class Level2 extends Phaser.Scene {
 
     this.clickSound = this.sound.add('clickSound')
 
-
-
     this.score = 0;
     this.bombAlreadyMade = false;
     this.bombBodyEnabled = false;
     this.doneWaitingForBombRotation = false;
-
 
     this.bg = this.add.tileSprite(0, 0, width * 5 / 2, height * 5 / 2, 'background').setOrigin(0, 0).setScale(0.4);
 
@@ -60,8 +57,6 @@ class Level2 extends Phaser.Scene {
       fontSize: '32px',
       fontWeight: "700",
     })
-
-
 
     this.showcaseObjects = [
       this.add.sprite(Phaser.Math.Between(0, width), Phaser.Math.Between(50, height), 'anamoly').setScale(0.4),
