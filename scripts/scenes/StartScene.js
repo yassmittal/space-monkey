@@ -4,6 +4,28 @@ class StartScene extends Phaser.Scene {
   }
 
   preload() {
+    const gameWidth = this.cameras.main.width;
+    const gameHeight = this.cameras.main.height;
+    const boxWidth = 150;
+    const boxHeight = 50;
+
+    const progressBar = this.add.graphics().setDepth(1);
+    const progressBox = this.add.graphics();
+    progressBox.fillStyle(0xb2f8fa, 1);
+    progressBox.fillRect((gameWidth - boxWidth) / 2, (gameHeight - boxHeight) / 2, boxWidth, 50);
+
+    this.load.on("progress", function (value) {
+      progressBar.clear();
+      progressBar.fillStyle(0x05254f, 1);
+      progressBar.fillRect((gameWidth - boxWidth + 10) / 2, (gameHeight - boxHeight + 20) / 2, (boxHeight - 20) * value, 30);
+    });
+
+
+    this.load.on("complete", function () {
+      progressBar.destroy();
+      progressBox.destroy();
+    });
+
     this.load.image('modalBg', "./assets/others/modalBG.png")
     this.load.image('buttonImg', "./assets/buttons/buttonImg.png")
     this.load.image('startImg', "./assets/others/starterImg.png")
